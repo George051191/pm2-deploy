@@ -16,7 +16,7 @@ module.exports = {
     deploy: {
         production: {
             user: DEPLOY_USER,
-            key: '~/.ssh/id_rsa',
+            ssh_options: "StrictHostKeyChecking=no",
             host: DEPLOY_HOST,
             ref: DEPLOY_REF,
             repo: 'https://github.com/George051191/pm2-deploy',
