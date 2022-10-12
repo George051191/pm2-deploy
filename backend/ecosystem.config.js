@@ -22,7 +22,7 @@ module.exports = {
             repo: 'https://github.com/George051191/pm2-deploy',
             path: DEPLOY_PATH,
             'pre-deploy': `scp ./*.env ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}`,
-            'post-deploy': 'npm i && npm run build',
+            'post-deploy': 'cd backend && npm i && npm run build',
         },
     },
 }
