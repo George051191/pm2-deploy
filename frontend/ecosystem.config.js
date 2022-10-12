@@ -20,7 +20,7 @@ module.exports = {
             ref: DEPLOY_REF,
             repo: 'https://github.com/George051191/pm2-deploy',
             path: DEPLOY_PATH,
-            'post-deploy': 'cd frontend && cp -r build/* /var/www/frontend',
+            'post-deploy': 'cd frontend && npm i && npm run build && cp -r build/* /var/www/frontend',
         },
     },
 }
