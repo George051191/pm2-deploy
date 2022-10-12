@@ -17,7 +17,9 @@ module.exports = {
             user: DEPLOY_USER,
             ssh_options: "StrictHostKeyChecking=no",
             host: DEPLOY_HOST,
-
+            ref: DEPLOY_REF,
+            repo: 'https://github.com/George051191/pm2-deploy',
+            path: DEPLOY_PATH,
             'post-deploy': 'cd frontend && npm i && npm run build',
         },
     },
