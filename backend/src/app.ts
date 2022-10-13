@@ -13,11 +13,7 @@ const { PORT = 3000 } = process.env;
 const app = express();
 mongoose.connect(DB_ADDRESS);
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-})
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -26,7 +22,18 @@ app.use(cookieParser());
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
+app.use((req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+  });
+  if(req.method === 'OPTIONS') {
+    res.send(200);
+} else {
+    next();
+}
+})
 app.use(routes);
 app.use(errors());
 app.use(errorHandler);

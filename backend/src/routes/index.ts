@@ -12,7 +12,7 @@ import { validateUserBody, validateAuthentication } from '../middlewares/validat
 import cors from 'cors';
 
 const router = Router();
-router.post('/signup',cors(), validateUserBody, createUser);
+router.post('/signup', validateUserBody, createUser);
 router.post('/signin', validateAuthentication, login);
 
 // все роуты, кроме /signin и /signup, защищены авторизацией;
