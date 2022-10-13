@@ -22,7 +22,7 @@ app.use(cookieParser());
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-/* app.use((req, res, next) => {
+app.use((req, res, next) => {
   res.set({
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
@@ -33,13 +33,13 @@ app.use(cookieParser());
 } else {
     next();
 }
-}) */
-const corsOptions = {
-  origin: 'http://localhost:3000', // домен сервиса, с которого будут приниматься запросы
-  optionsSuccessStatus: 200 // для старых браузеров
-}
+})
+/* const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
+} */
 
-app.use(cors(corsOptions)); // если не указать corsOptions,
+/* app.use(cors(corsOptions)); // если не указать corsOptions, */
 app.use(routes);
 app.use(errors());
 app.use(errorHandler);
