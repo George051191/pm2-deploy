@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
 import Header from "./Header";
@@ -39,14 +40,16 @@ function App() {
 
   // Запрос к API за информацией о пользователе и массиве карточек выполняется единожды, при монтировании.
   React.useEffect(() => {
+    const token = localStorage.getItem("jwt");
+   
     api
-      .getAppInfo()
+      .getAppInfo(token)
       .then(([cardData, userData]) => {
         setCurrentUser(userData);
         setCards(cardData);
       })
       .catch((err) => console.log(err));
-  }, []);
+  },[email]);
 
   // при монтировании App описан эффект, проверяющий наличие токена и его валидности
   React.useEffect(() => {
@@ -55,7 +58,7 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          setEmail(res.data.email);
+          setEmail(res.email);
           setIsLoggedIn(true);
           history.push("/");
         })

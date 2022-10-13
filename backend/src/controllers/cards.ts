@@ -8,7 +8,7 @@ import ForbiddenError from '../errors/forbidden-error';
 // GET /cards
 const getCards = (req: Request, res: Response, next: NextFunction) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 

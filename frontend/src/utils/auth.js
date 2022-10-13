@@ -1,10 +1,11 @@
-const BASE_URL = 'http://api.superfront.students.nomoredomains.icu';
+const BASE_URL = 'http://localhost:3001';
 
 const getResponse = (res) => {
     return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 }
 
 export const register = (email, password) => {
+
     return fetch(`${BASE_URL}/signup`, {
             method: 'POST',
             headers: {
@@ -16,6 +17,7 @@ export const register = (email, password) => {
         .then(getResponse)
 };
 export const login = (email, password) => {
+
     return fetch(`${BASE_URL}/signin`, {
             method: 'POST',
             headers: {
@@ -26,7 +28,9 @@ export const login = (email, password) => {
         })
         .then(getResponse)
         .then((data) => {
+
             localStorage.setItem('jwt', data.token)
+
             return data;
         })
 };
@@ -36,7 +40,7 @@ export const checkToken = (token) => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                'Authorization': token,
             }
         })
         .then(getResponse)

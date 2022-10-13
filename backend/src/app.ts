@@ -9,11 +9,14 @@ import errorHandler from './middlewares/error-handler';
 import { DB_ADDRESS } from './config';
 import routes from './routes';
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 const app = express();
+
 mongoose.connect(DB_ADDRESS);
 
-
+app.use(cors({
+  origin:'*',
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -22,24 +25,9 @@ app.use(cookieParser());
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-app.use((req, res, next) => {
-  res.set({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
-  });
-  if(req.method === 'OPTIONS') {
-    res.send(200);
-} else {
-    next();
-}
-})
-/* const corsOptions = {
-  origin: 'http://localhost:3000',
-  optionsSuccessStatus: 200
-} */
 
-/* app.use(cors(corsOptions)); // если не указать corsOptions, */
+
+
 app.use(routes);
 app.use(errors());
 app.use(errorHandler);

@@ -8,14 +8,14 @@ class Api {
         // Запросы в примере работы выполняются к старому Api, в новом URL изменены.
     }
 
-    getAppInfo() {
-        return Promise.all([this.getCardList(), this.getUserInfo()]);
+    getAppInfo(token) {
+        return Promise.all([this.getCardList(token), this.getUserInfo(token)]);
     }
 
-    getCardList() {
+    getCardList(token) {
         return fetch(`${this._address}/cards`, {
                 headers: {
-                    authorization: this._token,
+                    authorization: token,
                 },
             })
             .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
@@ -46,10 +46,10 @@ class Api {
             .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
     }
 
-    getUserInfo() {
+    getUserInfo(token) {
         return fetch(`${this._address}/users/me`, {
                 headers: {
-                    authorization: this._token,
+                    authorization: token,
                 },
             })
             .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`));
@@ -98,7 +98,7 @@ class Api {
 }
 
 const api = new Api({
-    address: 'http://api.superfront.students.nomoredomains.icu',
+    address: 'http://localhost:3001',
     token: localStorage.getItem('jwt'),
 });
 

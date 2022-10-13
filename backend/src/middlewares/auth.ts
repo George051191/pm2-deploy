@@ -1,22 +1,25 @@
 import 'dotenv/config';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { JWT_SECRET } from '../config';
 import UnauthorizedError from '../errors/unauthorized-error';
 import { Console } from 'console';
 
 // есть файл middlewares/auth.js, в нём мидлвэр для проверки JWT;
-interface JwtPayload {
-  _id: string
-}
+
+
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.jwt;
+  const { authorization } = req.headers;
+  const token = authorization;
 
-  let payload: JwtPayload | null = null;
+  let payload: any
   try {
-    payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    req.user = payload;
+    payload = jwt.verify(token!, `${JWT_SECRET}`);
+
+    const { _id } = payload
+
+    req.user = _id;
     next();
   } catch (e) {
 

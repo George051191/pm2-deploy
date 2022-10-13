@@ -13,19 +13,23 @@ import ConflictError from '../errors/conflict-error';
 
 // POST /signin
 const login = (req: Request, res: Response, next: NextFunction) => {
+
   const { email, password } = req.body;
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      console.log(user)
       const token = jwt.sign({ _id: user._id }, JWT_SECRET);
+      res.status(201).send({_id:user.id, name: user.name, about: user.about, avatar: user.avatar, email: user.email, password: user.password,  token: jwt.sign({ _id: user._id }, `${JWT_SECRET}`) })
       // Студенты могут записывать jwt в куку, либо же отправлять в теле ответа. Оба варианта - ок
-      res
+     /*  res
         .cookie('jwt', token, {
           // jwt токен выпускается на определённый срок (например, 7 дней), а не даётся бессрочно
           maxAge: 3600000,
           httpOnly: true,
           sameSite: true,
         })
-        .send({ data: user.toJSON() });
+        .send({ data: user.toJSON() }); */
     })
     // UnauthorizedError теперь возвращается из findUserByCredentials.
     // Её можно смело передавать в next
@@ -34,15 +38,17 @@ const login = (req: Request, res: Response, next: NextFunction) => {
 
 // POST /signup
 const createUser = (req: Request, res: Response, next: NextFunction) => {
+
   const {
     name, about, avatar, password, email,
   } = req.body;
+
   // в контроллере createUser почта и хеш пароля записываются в базу
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((data) => res.status(201).send(data))
+    .then((data) => res.status(201).send({ ...data,  token: jwt.sign({ _id: data._id }, `${JWT_SECRET}`, { expiresIn: '7d' }), }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
@@ -62,9 +68,10 @@ const getUsers = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getUserData = (id: string, res: Response, next: NextFunction) => {
+  console.log(id)
   User.findById(id)
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -74,15 +81,15 @@ const getUser = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // GET /users/me
-const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
-  getUserData(req.user._id, res, next);
+const getCurrentUser = (req: any, res: Response, next: NextFunction) => {
+  getUserData(req.user, res, next);
 };
 
 const updateUserData = (req: Request, res: Response, next: NextFunction) => {
-  const { user: { _id }, body } = req;
-  User.findByIdAndUpdate(_id, body, { new: true, runValidators: true })
+  const { user, body } = req;
+  User.findByIdAndUpdate(user, body, { new: true, runValidators: true })
     .orFail(() => new NotFoundError('Пользователь по заданному id отсутствует в базе'))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send( user ))
     .catch(next);
 };
 
