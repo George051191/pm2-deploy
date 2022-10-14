@@ -86,7 +86,7 @@ class Api {
 
     changeLikeCardStatus(cardID, like) {
         // Обычная реализация: 2 разных метода для удаления и постановки лайка.
-        return fetch(`${this._address}/cards/like/${cardID}`, {
+        return fetch(`${this._address}/cards/${cardID}/likes`, {
                 method: like ? 'PUT' : 'DELETE',
                 headers: {
                     authorization: this._token,
@@ -98,7 +98,7 @@ class Api {
 }
 
 const api = new Api({
-    address: 'http://localhost:3001',
+    address: 'https://api.superfront.students.nomoredomains.icu',
     token: localStorage.getItem('jwt'),
 });
 

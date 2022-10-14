@@ -14,10 +14,10 @@ const getCards = (req: Request, res: Response, next: NextFunction) => {
 
 // POST /cards
 const createCard = (req: Request, res: Response, next: NextFunction) => {
-  const owner = req.user._id;
+  const owner = req.user;
   const { name, link } = req.body;
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(201).send( card ))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
@@ -30,10 +30,12 @@ const createCard = (req: Request, res: Response, next: NextFunction) => {
 // DELETE /cards/:cardId
 const deleteCard = (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
+
   Card.findById(id)
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
     .then((card) => {
-      if (card.owner.toString() !== req.user._id) {
+
+      if (card.owner.toString() !== req.user.toString()) {
         // пользователь не может удалить карточку, которую он не создавал
         throw new ForbiddenError('Нельзя удалить чужую карточку');
       } else {
@@ -46,10 +48,11 @@ const deleteCard = (req: Request, res: Response, next: NextFunction) => {
 
 const updateLike = (req: Request, res: Response, next: NextFunction, method: string) => {
   const { params: { id } } = req;
-  Card.findByIdAndUpdate(id, { [method]: { likes: req.user._id } }, { new: true })
+
+  Card.findByIdAndUpdate(id, { [method]: { likes: req.user } }, { new: true })
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
     .then((card) => {
-      res.send({ data: card });
+      res.send( card );
     })
     .catch(next);
 };
