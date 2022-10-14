@@ -59,7 +59,7 @@ class Api {
         return fetch(`${this._address}/users/me`, {
                 method: 'PATCH',
                 headers: {
-                    authorization: this._token,
+                    authorization: localStorage.getItem('jwt'),
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -74,7 +74,7 @@ class Api {
         return fetch(`${this._address}/users/me/avatar`, {
                 method: 'PATCH',
                 headers: {
-                    authorization: this._token,
+                    authorization: localStorage.getItem('jwt'),
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
